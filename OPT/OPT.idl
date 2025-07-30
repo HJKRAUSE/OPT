@@ -1,0 +1,92 @@
+// OPT.idl : IDL source for OPT
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (OPT.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(a817e7a2-43fa-11d0-9e44-00aa00b6770a),
+	dual,
+	pointer_default(unique)
+]
+interface IComponentRegistrar : IDispatch
+{
+	[id(1)]	HRESULT Attach([in] BSTR bstrPath);
+	[id(2)]	HRESULT RegisterAll();
+	[id(3)]	HRESULT UnregisterAll();
+	[id(4)]	HRESULT GetComponents([out] SAFEARRAY(BSTR)* pbstrCLSIDs, [out] SAFEARRAY(BSTR)* pbstrDescriptions);
+	[id(5)]	HRESULT RegisterComponent([in] BSTR bstrCLSID);
+	[id(6)] HRESULT UnregisterComponent([in] BSTR bstrCLSID);
+};
+
+[
+	object,
+	uuid(2637d647-5828-46ba-bb5f-b18889547b1b),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface ISolver : IDispatch
+{
+	[id(1), helpstring("Initialize solver with algorithm and dimensions")]
+	HRESULT initialize([in] LONG algorithm, [in] LONG dimensions);
+
+	[id(2), helpstring("Perform optimization and return result")]
+	HRESULT optimize([in] VARIANT x0, [out, retval] VARIANT* result);
+
+	[id(3), helpstring("Set minimum objective function")]
+	HRESULT setMinObjective([in] IDispatch* object, [in] BSTR function_name);
+
+	[id(4), helpstring("Set maximum objective function")]
+	HRESULT setMaxObjective([in] IDispatch* object, [in] BSTR function_name);
+
+	[id(5), helpstring("Set lower bounds for optimization variables")]
+	HRESULT setLowerBounds([in] VARIANT lb);
+
+	[id(6), helpstring("Set upper bounds for optimization variables")]
+	HRESULT setUpperBounds([in] VARIANT ub);
+
+	[id(7), helpstring("Set relative tolerance on optimization variables")]
+	HRESULT setXTolRel([in] DOUBLE tol);
+
+	[id(8), helpstring("Set absolute tolerance on optimization variables")]
+	HRESULT setXTolAbs([in] DOUBLE tol);
+
+	[id(9), helpstring("Set relative tolerance on function values")]
+	HRESULT setFTolRel([in] DOUBLE tol);
+
+	[id(10), helpstring("Set absolute tolerance on function values")]
+	HRESULT setFTolAbs([in] DOUBLE tol);
+
+	[id(11), helpstring("Set maximum number of function evaluations")]
+	HRESULT setMaxEval([in] LONG max);
+};
+[
+	uuid(d1d28a2f-644d-40ee-ba0e-ad17f409d41c),
+	version(1.0),
+	custom(a817e7a1-43fa-11d0-9e44-00aa00b6770a,"{dc228e50-dfbe-4430-bfd4-51b5049fb371}")
+]
+library OPTLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(dc228e50-dfbe-4430-bfd4-51b5049fb371)
+	]
+	coclass CompReg
+	{
+		[default] interface IComponentRegistrar;
+	};
+	[
+		uuid(7f5e805f-33b0-4cdf-b102-6d37098153e5)
+	]
+	coclass Solver
+	{
+		[default] interface ISolver;
+	};
+};
+
+import "shobjidl.idl";
